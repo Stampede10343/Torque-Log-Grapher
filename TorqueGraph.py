@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 #f = raw_input("Enter file name: ")
 inputFile = open("torqueTrackLog1.txt")
 
-header = inputFile.next() #first line
+header = inputFile.readline() #first line
 
 print(header)
         
@@ -26,7 +26,7 @@ class LogEntry:
 
 
 def getValues(file, logEntry):
-    line = file.next()
+    line = file.readline()
 
     valueList = line.split(',')
 
@@ -55,13 +55,24 @@ def stripTime(time):
 
 dataList = []
 
-for entry in inputFile.next():
+for entry in inputFile.readline():
     dataLine = getValues(inputFile, entry)
     dataList.append(dataLine)
     
 
 print(stripTime(dataList[1].time))
 
-plt.plot([stripTime(dataList[10].time),stripTime(dataList[11].time),stripTime(dataList[12].time)],[dataList[10].RPM,dataList[11].RPM,dataList[12].RPM])
+x = []
+y = []
+for data in dataList:
+	#plt.plot([stripTime(data.time)],[data.RPM])
+        x.append(stripTime(data.time))
+        y.append(data.RPM)
 
+plt.plot(x,y)
+plt.xlim(int(stripTime(dataList[0].time)),int(stripTime(dataList[(len(dataList)-1)].time)))
+plt.ylabel("RPM")
+plt.ylim(0,5500)
+
+#plt.draw()
 plt.show()
