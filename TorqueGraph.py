@@ -1,7 +1,10 @@
 import matplotlib.pyplot as plt
 
-#f = raw_input("Enter file name: ")
-inputFile = open("torqueTrackLog1.txt")
+f = input("Enter file name: ")
+if f.endswith(".txt"):
+	inputFile = open(f)
+else:
+	inputFile = open(f + ".txt")
 
 header = inputFile.readline()  # first line
 
@@ -55,7 +58,7 @@ def stripTime(time):
 
 dataList = []
 
-for line in inputFile.readline():
+for line in inputFile:
 	dataLine = getValues(inputFile)
 	dataList.append(dataLine)
 
@@ -69,25 +72,26 @@ engLoad = []
 for data in dataList:
 	timeList.append(stripTime(data.time))
 	rpmList.append(data.RPM)
-	t = float(data.timingAdv)*20
+	t = float(data.timingAdv)
 	timing.append(t)
-	e = float(data.engineLoad)*10
+	e = float(data.engineLoad)
 	engLoad.append(e)
 
-fig = plt.figure()
-fig.add_subplot(211)
+plt.figure(1)
+#fig.add_subplot(211)
 
-rpmPlot = fig.add_subplot(212)
-loadPlot = fig.add_subplot(211)
-
-
+rpmPlot = plt.subplot(212)
 rpmPlot.plot(timeList,rpmList)
-loadPlot.plot(timeList,timing)
-plt.plot(timeList, engLoad)
 
-plt.xlim(int(stripTime(dataList[0].time)),int(stripTime(dataList[(len(dataList)-1)].time)))
-plt.ylabel("RPM")
-plt.ylim(0,5500)
+loadPlot = plt.subplot(211)
+loadPlot.plot(timeList,timing)
+
+loadPlot.plot(timeList, engLoad)
+loadPlot.set_ylim(5,50)
+
+rpmPlot.set_xlim(int(stripTime(dataList[0].time)),int(stripTime(dataList[(len(dataList)-1)].time)))
+rpmPlot.set_ylabel("RPM")
+rpmPlot.set_ylim(0,6000)
 
 plt.title("RPM and Timing Advance")
 
